@@ -51,36 +51,6 @@ The dataset was imported into Power BI’s Power Query for data validation and c
 - There were no missing values, empty cells or duplicates
 To enable flexibility of time-based analysis, a **Calendar Table** was then created in power query using the 
 
-//Create Date Dimension
-(StartDate as date, EndDate as date)=>
-let
-    //Capture the date range from the parameters
-    StartDate = #date(Date.Year(StartDate), Date.Month(StartDate), Date.Day(StartDate)),
-    EndDate = #date(Date.Year(EndDate), Date.Month(EndDate), Date.Day(EndDate)),
-    //Get the number of dates that will be required for the table
-    GetDateCount = Duration.Days(EndDate - StartDate) + 1,
-    //Take the count of dates and turn it into a list of dates
-    GetDateList = List.Dates(StartDate, GetDateCount, #duration(1,0,0,0)),
-    //Convert the list into a table
-    DateListToTable = Table.FromList(GetDateList, Splitter.SplitByNothing(), {"Date"}, null, ExtraValues.Error),
-    //Add Year Column
-    YearNumber = Table.AddColumn(DateListToTable, "Year", each Date.Year([Date])),
-    //Add Quarter Column
-         QuarterNumber = Table.AddColumn(YearNumber , "Quarter", each "Q" & 	Number.ToText(Date.QuarterOfYear([Date]))),
-     //Add Week Number Column
-    WeekNumber= Table.AddColumn(QuarterNumber , "Week Number", each Date.WeekOfYear([Date])),
-    //Add Month Number Column
-    MonthNumber = Table.AddColumn(WeekNumber, "Month Number", each Date.Month([Date])),
-    //Add Month Name Column
-    MonthName = Table.AddColumn(MonthNumber , "Month", each Date.ToText([Date],"MMMM")),
-    //Add Day Column
-    DayNumber = Table.AddColumn(MonthName , "Day", each Date.Day([Date])),
-    //Add Day of Week Column
-    DayOfWeek = Table.AddColumn(DayNumber , "Day of Week", each Date.ToText([Date],"dddd"))
-in
-   DayOfWeek
-```
-An additional table was created to house the social media Channels’ image URL to enhance the visual appeal of the final dashboard.
 
 ## Data Modelling
 The Model from the cleaned data is a **basic Star Schema** comprising of:
